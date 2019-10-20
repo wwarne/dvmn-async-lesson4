@@ -13,12 +13,14 @@ READ_HOST = 'minechat.dvmn.org'
 READ_PORT = 5000
 HISTORY_PATH = 'minechat.history'
 
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser('Minechat client')
     g = parser.add_argument_group('Chat reader settings')
     g.add_argument('--host', type=str, help='Chat address', default=os.getenv('MINECHAT_READ_HOST', READ_HOST))
     g.add_argument('--port', type=int, help='Chat port', default=os.getenv('MINECHAT_READ_PORT', READ_PORT))
-    g.add_argument('--history', metavar='FILEPATH', type=str, help='Path to a history file', default=os.getenv('MINECHAT_HISTORY_PATH', HISTORY_PATH))
+    g.add_argument('--history', metavar='FILEPATH', type=str, help='Path to a history file',
+                   default=os.getenv('MINECHAT_HISTORY_PATH', HISTORY_PATH))
     return parser
 
 
@@ -39,6 +41,7 @@ async def chat_messages_stream(host: str, port: int) -> AsyncIterator[str]:
                 except asyncio.TimeoutError:
                     logging.info('Долго не было сообщений в чате. Переподключимся')
                     break
+
 
 async def chat_spy(host: str, port: int, history: str) -> None:
     async with AIOFile(history, 'a', encoding='utf-8') as afp:
