@@ -53,6 +53,7 @@ async def main_sender(host: str, port: int, token: Optional[str], username: Opti
                 logging.error('Ошибка при отправке соединения', exc_info=True)
 
 if __name__ == '__main__':
+    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt="%d.%m.%Y %H:%M:%S", level=logging.DEBUG)
     parser = create_parser()
     options = parser.parse_args()
     validate_options(options)

@@ -71,7 +71,6 @@ async def read_line_from_chat(reader: StreamReader) -> str:
     except (SyntaxError, UnicodeDecodeError):
         logging.error('Получено ошибочное сообщение', exc_info=True)
         return ''
-    logging.debug(f'Получили строку {msg}')
     return msg
 
 
