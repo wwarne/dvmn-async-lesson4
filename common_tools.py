@@ -1,8 +1,9 @@
+import json
 import logging
 import asyncio
 import socket
 from contextlib import asynccontextmanager
-from typing import Tuple
+from typing import Tuple, Optional
 from asyncio.streams import StreamReader, StreamWriter
 
 
@@ -72,3 +73,56 @@ async def read_line_from_chat(reader: StreamReader) -> str:
         return ''
     logging.debug(f'Получили строку {msg}')
     return msg
+
+
+def sanitize_message(data: str) -> str:
+    """
+    Очищает сообщение от символов переноса строки.
+
+    В протоколе взаимодействия с сервером знак переноса строки \n обозначает конец сообщения.
+    """
+    return data.strip().replace('\r', '').replace('\n', '')
+
+
+async def send_message(writer: StreamWriter, message: str) -> None:
+    """Кодирует и отправляет сообщение в чат."""
+    message = sanitize_message(message).encode(encoding="utf-8") + b'\n\n'
+    writer.write(message)
+    await writer.drain()
+    logging.debug(f'Отправили сообщение {message}')
+
+
+async def authorise(reader: StreamReader, writer: StreamWriter, token: str) -> Optional[str]:
+    """Процесс авторизации пользователя в чате."""
+    logging.debug('Пробуем авторизоваться')
+    greetings = await read_line_from_chat(reader)
+    logging.debug(f'Приветствие чата: {greetings}')
+    await send_message(writer, token)
+    response = await read_line_from_chat(reader)
+    response = json.loads(response)
+    if not response:
+        logging.error('Неправильный токен или сервер не работает')
+        return
+    logging.debug(response)
+    logging.debug(f'Авторизован в чате как {response.get("nickname")}')
+    return response.get('nickname')
+
+
+async def register(reader: StreamReader, writer: StreamWriter, nickname: str) -> str:
+    """Регистрация нового пользователя в чате."""
+    logging.debug('Пробуем зарегистрироваться')
+    greetings = await read_line_from_chat(reader)
+    logging.debug(f'Приветствие чата: {greetings}')
+    await send_message(writer, '')  # говорим, что у нас нет токена
+    ask_for_nickname = await read_line_from_chat(reader)
+    logging.debug(f'Предложение выбрать свой никнейм: {ask_for_nickname}')
+    await send_message(writer, nickname)
+    response_content = await read_line_from_chat(reader)
+    if not response_content:
+        logging.error('Не удалось зарегистрироваться, попробуйте позднее')
+        return ''
+    response = json.loads(response_content)
+    logging.debug(response)
+    logging.debug(f'Зарегистрирован как {response.get("nickname")}')
+    logging.debug(f'Новый токен {response.get("account_hash")}')
+    return response.get('account_hash')
