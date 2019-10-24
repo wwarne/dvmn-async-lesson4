@@ -34,6 +34,26 @@ You can also set environmental variables:
 
 The command-line arguments are have more priority than environmental variables.
 
+## Sending chat messages
+
+First of all you will need to register your username and write down your token for authentication.
+
+```bash
+$ python chat_writer.py --username "My very unique username"
+> Сохраните ваш токен для доступа в чат 70563b20-f69c-11e9-8154-0242ac110002
+```
+
+With token you can send chat messages as follow:
+
+```bash
+$ python chat_writer.py --token "70563b20-f69c-11e9-8154-0242ac110002" --message "Hello everyone! Do you want to know some Minecraft secrets?"
+```
+
+You can also set token as environmental variables:
+
+* `MINECHAT_WRITE_HOST` - Chat address (ip or host name)
+* `MINECHAT_WRITE_PORT` - Chat port for writing
+
 
 # Project Goals
 
