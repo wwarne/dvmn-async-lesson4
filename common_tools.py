@@ -84,7 +84,11 @@ def sanitize_message(data: str) -> str:
 
 
 async def write_line_to_chat(writer: StreamWriter, message: str) -> None:
-    """Кодирует и отправляет строку в сторону чата."""
+    """
+    Кодирует и отправляет строку в сторону чата.
+
+    В сторону - потому что никаких гарантий доставки до сервера дать невозможно.
+    """
     message = sanitize_message(message).encode(encoding="utf-8") + b'\n'
     writer.write(message)
     await writer.drain()

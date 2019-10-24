@@ -4,8 +4,9 @@ import logging
 import os
 import socket
 import sys
+from asyncio.streams import StreamWriter
 from typing import Optional
-from common_tools import connect_to_chat, send_message, authorise, register
+from common_tools import connect_to_chat, write_line_to_chat, authorise, register
 
 WRITE_HOST = 'minechat.dvmn.org'
 WRITE_PORT = 5050
@@ -31,6 +32,12 @@ def validate_options(properties: argparse.Namespace) -> None:
         sys.exit(1)
 
 
+async def submit_message(writer: StreamWriter, message: str) -> None:
+    """Отправляет сообщение в чат"""
+    await write_line_to_chat(writer, message)
+    await write_line_to_chat(writer, '')
+
+
 async def main_sender(host: str, port: int, token: Optional[str], username: Optional[str], message: Optional[str]) -> None:
     """Отправка сообщения"""
     if username:
@@ -48,7 +55,8 @@ async def main_sender(host: str, port: int, token: Optional[str], username: Opti
                 if not auth_result:
                     logging.error(f'Не удалось авторизоваться с токеном {token}')
                     return
-                await asyncio.wait_for(send_message(writer, message), 10)
+                if message:
+                    await asyncio.wait_for(submit_message(writer, message), 10)
             except (ConnectionRefusedError, ConnectionError, asyncio.TimeoutError, socket.gaierror):
                 logging.error('Ошибка при отправке соединения', exc_info=True)
 
