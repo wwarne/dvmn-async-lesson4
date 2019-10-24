@@ -6,7 +6,12 @@ import socket
 import sys
 from asyncio.streams import StreamWriter
 from typing import Optional
-from common_tools import connect_to_chat, write_line_to_chat, authorise, register
+from common_tools import (
+    authorise,
+    connect_to_chat,
+    register,
+    write_line_to_chat,
+)
 
 WRITE_HOST = 'minechat.dvmn.org'
 WRITE_PORT = 5050
