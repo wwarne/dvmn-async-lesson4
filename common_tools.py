@@ -80,12 +80,12 @@ def sanitize_message(data: str) -> str:
 
     В протоколе взаимодействия с сервером знак переноса строки \n обозначает конец сообщения.
     """
-    return data.strip().replace('\r', '').replace('\n', '')
+    return data.replace('\r', '').replace('\n', ' ').strip()
 
 
-async def send_message(writer: StreamWriter, message: str) -> None:
-    """Кодирует и отправляет сообщение в чат."""
-    message = sanitize_message(message).encode(encoding="utf-8") + b'\n\n'
+async def write_line_to_chat(writer: StreamWriter, message: str) -> None:
+    """Кодирует и отправляет строку в сторону чата."""
+    message = sanitize_message(message).encode(encoding="utf-8") + b'\n'
     writer.write(message)
     await writer.drain()
     logging.debug(f'Отправили сообщение {message}')
@@ -96,7 +96,7 @@ async def authorise(reader: StreamReader, writer: StreamWriter, token: str) -> O
     logging.debug('Пробуем авторизоваться')
     greetings = await read_line_from_chat(reader)
     logging.debug(f'Приветствие чата: {greetings}')
-    await send_message(writer, token)
+    await write_line_to_chat(writer, token)
     response = await read_line_from_chat(reader)
     response = json.loads(response)
     if not response:
@@ -112,10 +112,10 @@ async def register(reader: StreamReader, writer: StreamWriter, nickname: str) ->
     logging.debug('Пробуем зарегистрироваться')
     greetings = await read_line_from_chat(reader)
     logging.debug(f'Приветствие чата: {greetings}')
-    await send_message(writer, '')  # говорим, что у нас нет токена
+    await write_line_to_chat(writer, '')  # говорим, что у нас нет токена
     ask_for_nickname = await read_line_from_chat(reader)
     logging.debug(f'Предложение выбрать свой никнейм: {ask_for_nickname}')
-    await send_message(writer, nickname)
+    await write_line_to_chat(writer, nickname)
     response_content = await read_line_from_chat(reader)
     if not response_content:
         logging.error('Не удалось зарегистрироваться, попробуйте позднее')
