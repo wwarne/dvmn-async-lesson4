@@ -115,7 +115,7 @@ async def register(reader: StreamReader, writer: StreamWriter, nickname: str) ->
     logging.debug('Trying to register')
     greetings = await read_line_from_chat(reader)
     logging.debug(f'Greetings from the chat: {greetings}')
-    await write_line_to_chat(writer, '')  # говорим, что у нас нет токена
+    await write_line_to_chat(writer, '')  # say 'we don't have a token'
     ask_for_nickname = await read_line_from_chat(reader)
     logging.debug(f'Chat asks about nickname: {ask_for_nickname}')
     await write_line_to_chat(writer, nickname)
