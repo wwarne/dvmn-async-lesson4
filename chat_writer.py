@@ -64,8 +64,11 @@ async def main_sender(host: str, port: int, token: Optional[str], username: Opti
                     logging.error(f'Authorisation with the token `{token}` has failed.')
                     return
                 if message:
+                    print(message, end='', flush=True)
                     await asyncio.wait_for(submit_message(writer, message), 10)
+                    print(' [✓]')
             except (ConnectionRefusedError, ConnectionError, asyncio.TimeoutError, socket.gaierror):
+                print(' [X]')
                 logging.error('Error with connection to the server', exc_info=True)
 
 if __name__ == '__main__':
