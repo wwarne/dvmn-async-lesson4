@@ -41,7 +41,7 @@ First of all you will need to register your username and write down your token f
 
 ```bash
 $ python chat_writer.py --username "My very unique username"
-> Сохраните ваш токен для доступа в чат 70563b20-f69c-11e9-8154-0242ac110002
+> Please save this access token: 70563b20-f69c-11e9-8154-0242ac110002
 ```
 
 With token you can send chat messages as follow:

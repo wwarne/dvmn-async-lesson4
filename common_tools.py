@@ -29,7 +29,7 @@ async def open_chat_connection(
             reader, writer = await asyncio.wait_for(
                 asyncio.open_connection(host, port), timeout=60,
             )
-            logging.info(f'Connection to the hat server {host}:{port} has been established.')
+            logging.info(f'Connection to the chat server {host}:{port} has been established.')
             return reader, writer
         except (ConnectionRefusedError, asyncio.TimeoutError, socket.gaierror):
             if total_attempts < attempts:
