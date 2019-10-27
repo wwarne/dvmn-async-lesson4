@@ -27,7 +27,7 @@ def create_parser() -> argparse.ArgumentParser:
     p_group.add_argument('--message', type=str, help='Message to send')
     p_group.add_argument('--verbose', help='Show more information', action='store_true', default=os.getenv('MINECHAT_WRITE_VERBOSE', False))
     exc_group = p_group.add_mutually_exclusive_group()
-    exc_group.add_argument('--token', type=str, help='Authorization token', default=os.getenv('MINECHAT_TOKEN') )
+    exc_group.add_argument('--token', type=str, help='Authorization token', default=os.getenv('MINECHAT_TOKEN'))
     exc_group.add_argument('--username', type=str, help='Your username for register (if token is not set)')
     return parser
 
@@ -77,5 +77,5 @@ if __name__ == '__main__':
     options = parser.parse_args()
     validate_options(options)
     logging_level = logging.DEBUG if options.verbose is True else logging.INFO
-    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt="%d.%m.%Y %H:%M:%S", level=logging_level)
+    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt='%d.%m.%Y %H:%M:%S', level=logging_level)
     asyncio.run(main_sender(options.host, options.port, options.token, options.username, options.message))
