@@ -71,20 +71,19 @@ async def read_line_from_chat(reader: StreamReader) -> str:
     """Получает байтовую строку и переводит её в обычную."""
     chat_data = await reader.readline()
     try:
-        msg = chat_data.decode(encoding='utf-8').strip()
+        return chat_data.decode(encoding='utf-8').strip()
     except (SyntaxError, UnicodeDecodeError):
         logging.error('Получено ошибочное сообщение', exc_info=True)
         return ''
-    return msg
 
 
-def sanitize_message(data: str) -> str:
+def sanitize_message(message: str) -> str:
     """
     Очищает сообщение от символов переноса строки.
 
     В протоколе взаимодействия с сервером знак переноса строки \n обозначает конец сообщения.
     """
-    return data.replace('\r', '').replace('\n', ' ').strip()
+    return message.replace('\r', '').replace('\n', ' ').strip()
 
 
 async def write_line_to_chat(writer: StreamWriter, message: str) -> None:

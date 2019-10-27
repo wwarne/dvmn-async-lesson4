@@ -4,11 +4,13 @@ import logging
 import os
 import socket
 import sys
-from asyncio.streams import StreamWriter
+from asyncio.streams import StreamReader, StreamWriter
 from typing import Optional
+
 from common_tools import (
     authorise,
     connect_to_chat,
+    read_line_from_chat,
     register,
     write_line_to_chat,
 )
@@ -18,17 +20,19 @@ WRITE_PORT = 5050
 
 
 def create_parser() -> argparse.ArgumentParser:
+    """Creates a parser to process command line arguments."""
     parser = argparse.ArgumentParser('Minechat message sender')
-    g = parser.add_argument_group('Sender settings')
-    g.add_argument('--host', type=str, help='Chat address', default=os.getenv('MINECHAT_WRITE_HOST', WRITE_HOST))
-    g.add_argument('--port', type=int, help='Chat port', default=os.getenv('MINECHAT_WRITE_PORT', WRITE_PORT))
-    g.add_argument('--message', type=str, help='Message to send')
-    group = g.add_mutually_exclusive_group()
-    group.add_argument('--token', type=str, help='Authorization token', )
-    group.add_argument('--username', type=str, help='Your username for register (if token is not set)')
+    p_group = parser.add_argument_group('Sender settings')
+    p_group.add_argument('--host', type=str, help='Chat address', default=os.getenv('MINECHAT_WRITE_HOST', WRITE_HOST))
+    p_group.add_argument('--port', type=int, help='Chat port', default=os.getenv('MINECHAT_WRITE_PORT', WRITE_PORT))
+    p_group.add_argument('--message', type=str, help='Message to send')
+    exc_group = p_group.add_mutually_exclusive_group()
+    exc_group.add_argument('--token', type=str, help='Authorization token', )
+    exc_group.add_argument('--username', type=str, help='Your username for register (if token is not set)')
     return parser
 
 def validate_options(properties: argparse.Namespace) -> None:
+    """Validate resulting options from argument parser."""
     if not properties.token and not properties.username:
         print('Нужно указать или токен доступа или имя пользователя для регистрации')
         sys.exit(1)
@@ -38,13 +42,13 @@ def validate_options(properties: argparse.Namespace) -> None:
 
 
 async def submit_message(writer: StreamWriter, message: str) -> None:
-    """Отправляет сообщение в чат"""
+    """Отправляет сообщение в чат."""
     await write_line_to_chat(writer, message)
     await write_line_to_chat(writer, '')
 
 
 async def main_sender(host: str, port: int, token: Optional[str], username: Optional[str], message: Optional[str]) -> None:
-    """Отправка сообщения"""
+    """Отправка сообщения."""
     if username:
         async with connect_to_chat(host, port) as (reader, writer):
             try:
