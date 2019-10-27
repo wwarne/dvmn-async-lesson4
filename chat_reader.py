@@ -42,10 +42,6 @@ async def chat_messages_stream(host: str, port: int) -> AsyncIterator[str]:
             while True:
                 try:
                     new_msg = await asyncio.wait_for(read_line_from_chat(reader), timeout=60)
-                    """
-                    Then remote server is falling down, readline() starts to return an empty bytestring - b''
-                    so read_line_from_chat returns an empty string
-                    """
                     if not new_msg:
                         logging.info('Got an empty message. Usually it happens because of connection problems.')
                         break
