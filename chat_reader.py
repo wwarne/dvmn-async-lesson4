@@ -26,6 +26,12 @@ def create_parser() -> argparse.ArgumentParser:
         type=str, help='Path to a history file',
         default=os.getenv('MINECHAT_HISTORY_PATH', HISTORY_PATH),
     )
+    p_group.add_argument(
+        '--verbose',
+        help='Show more information',
+        action='store_true',
+        default=os.getenv('MINECHAT_READ_VERBOSE', False),
+    )
     return parser
 
 
@@ -62,4 +68,9 @@ async def chat_spy(host: str, port: int, history: str) -> None:
 if __name__ == '__main__':
     arg_parser = create_parser()
     options = arg_parser.parse_args()
-    asyncio.run(chat_spy(options.host, options.port, options.history))
+    logging_level = logging.DEBUG if options.verbose is True else logging.INFO
+    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt="%d.%m.%Y %H:%M:%S", level=logging_level)
+    try:
+        asyncio.run(chat_spy(options.host, options.port, options.history))
+    except KeyboardInterrupt:
+        pass
