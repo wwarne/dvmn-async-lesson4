@@ -15,7 +15,7 @@ HISTORY_PATH = 'minechat.history'
 
 
 def create_parser() -> argparse.ArgumentParser:
-    """Creates a parser to process command line arguments."""
+    """Creates a arg_parser to process command line arguments."""
     parser = argparse.ArgumentParser('Minechat client')
     p_group = parser.add_argument_group('Chat reader settings')
     p_group.add_argument('--host', type=str, help='Chat address', default=os.getenv('MINECHAT_READ_HOST', READ_HOST))
@@ -41,11 +41,11 @@ async def chat_messages_stream(host: str, port: int) -> AsyncIterator[str]:
                     so read_line_from_chat returns an empty string
                     """
                     if not new_msg:
-                        logging.info('Получено пустое сообщение. Обычно такое бывает из-за обрыва соединения.')
+                        logging.info('Got an empty message. Usually it happens because of connection problems.')
                         break
                     yield new_msg
                 except asyncio.TimeoutError:
-                    logging.info('Долго не было сообщений в чате. Переподключимся')
+                    logging.info('There wasn\'t messages for a long time. Reconnecting to a chat.')
                     break
 
 
@@ -60,6 +60,6 @@ async def chat_spy(host: str, port: int, history: str) -> None:
 
 
 if __name__ == '__main__':
-    parser = create_parser()
-    options = parser.parse_args()
+    arg_parser = create_parser()
+    options = arg_parser.parse_args()
     asyncio.run(chat_spy(options.host, options.port, options.history))
