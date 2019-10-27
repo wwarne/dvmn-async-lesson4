@@ -45,7 +45,7 @@ async def chat_messages_stream(host: str, port: int) -> AsyncIterator[str]:
                         break
                     yield new_msg
                 except asyncio.TimeoutError:
-                    logging.info('There wasn\'t messages for a long time. Reconnecting to a chat.')
+                    logging.info('There were no messages for a long time. Reconnecting to a chat.')
                     break
 
 
