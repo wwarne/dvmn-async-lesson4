@@ -73,7 +73,6 @@ async def main_sender(host: str, port: int, token: Optional[str], username: Opti
                 logging.error('Error with connection to the server', exc_info=True)
 
 if __name__ == '__main__':
-
     parser = create_parser()
     options = parser.parse_args()
     validate_options(options)
