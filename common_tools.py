@@ -103,7 +103,7 @@ async def authorise(reader: StreamReader, writer: StreamWriter, token: str) -> O
     response = await read_line_from_chat(reader)
     response = json.loads(response)
     if not response:
-        logging.error('Wrong token (or other problems)')
+        logging.error('Wrong token. Please check it or register new user with `--username` parameter')
         return None
     logging.debug(response)
     logging.info(f'Authorised as: {response.get("nickname")}')
