@@ -1,16 +1,18 @@
+import asyncio
 import json
 import logging
-import asyncio
 import socket
-from contextlib import asynccontextmanager
-from typing import Tuple, Optional
 from asyncio.streams import StreamReader, StreamWriter
+from contextlib import asynccontextmanager
+from typing import Optional, Tuple
 
 
-async def open_chat_connection(host: str,
-                               port: int,
-                               attempts: int = 2,
-                               delay: int = 3) -> Tuple[StreamReader, StreamWriter]:
+async def open_chat_connection(
+    host: str,
+    port: int,
+    attempts: int = 2,
+    delay: int = 3,
+) -> Tuple[StreamReader, StreamWriter]:
     """
     Устанавливает соединение с сервером чата.
 
@@ -39,12 +41,14 @@ async def open_chat_connection(host: str,
 
 
 @asynccontextmanager
-async def connect_to_chat(host: str,
-                          port: int,
-                          attempts: int = 2,
-                          delay: int = 3) -> Tuple[StreamReader, StreamWriter]:
+async def connect_to_chat(
+    host: str,
+    port: int,
+    attempts: int = 2,
+    delay: int = 3,
+) -> Tuple[StreamReader, StreamWriter]:
     """
-    Контекстный менеджер, возвращающий reader&writer к чату
+    Контекстный менеджер, возвращающий reader&writer к чату.
 
     :param host: Адрес сервера
     :param port: Порт сервера
@@ -65,9 +69,9 @@ async def connect_to_chat(host: str,
 
 async def read_line_from_chat(reader: StreamReader) -> str:
     """Получает байтовую строку и переводит её в обычную."""
-    data = await reader.readline()
+    chat_data = await reader.readline()
     try:
-        msg = data.decode(encoding='utf-8').strip()
+        msg = chat_data.decode(encoding='utf-8').strip()
     except (SyntaxError, UnicodeDecodeError):
         logging.error('Получено ошибочное сообщение', exc_info=True)
         return ''
@@ -84,12 +88,8 @@ def sanitize_message(data: str) -> str:
 
 
 async def write_line_to_chat(writer: StreamWriter, message: str) -> None:
-    """
-    Кодирует и отправляет строку в сторону чата.
-
-    В сторону - потому что никаких гарантий доставки до сервера дать невозможно.
-    """
-    message = sanitize_message(message).encode(encoding="utf-8") + b'\n'
+    """Кодирует и отправляет строку в путешествие в сторону чата."""
+    message = sanitize_message(message).encode(encoding='utf-8') + b'\n'
     writer.write(message)
     await writer.drain()
     logging.debug(f'Отправили сообщение {message}')
@@ -105,7 +105,7 @@ async def authorise(reader: StreamReader, writer: StreamWriter, token: str) -> O
     response = json.loads(response)
     if not response:
         logging.error('Неправильный токен или сервер не работает')
-        return
+        return None
     logging.debug(response)
     logging.debug(f'Авторизован в чате как {response.get("nickname")}')
     return response.get('nickname')
