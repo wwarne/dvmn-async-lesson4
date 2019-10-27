@@ -27,7 +27,7 @@ def create_parser() -> argparse.ArgumentParser:
     p_group.add_argument('--port', type=int, help='Chat port', default=os.getenv('MINECHAT_WRITE_PORT', WRITE_PORT))
     p_group.add_argument('--message', type=str, help='Message to send')
     exc_group = p_group.add_mutually_exclusive_group()
-    exc_group.add_argument('--token', type=str, help='Authorization token', )
+    exc_group.add_argument('--token', type=str, help='Authorization token', default=os.getenv('MINECHAT_TOKEN') )
     exc_group.add_argument('--username', type=str, help='Your username for register (if token is not set)')
     return parser
 
@@ -70,7 +70,7 @@ async def main_sender(host: str, port: int, token: Optional[str], username: Opti
                 logging.error('Ошибка при отправке соединения', exc_info=True)
 
 if __name__ == '__main__':
-    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt="%d.%m.%Y %H:%M:%S", level=logging.DEBUG)
+    logging.basicConfig(format='[%(asctime)s]  %(message)s', datefmt="%d.%m.%Y %H:%M:%S", level=logging.INFO)
     parser = create_parser()
     options = parser.parse_args()
     validate_options(options)
