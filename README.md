@@ -1,6 +1,7 @@
 # Lesson 04 - Minecraft undeground chat
 
-Help for babushka Zina.
+Help for a professional Minecraft player - babushka Zina.
+
 
 
 # Requirements
@@ -32,7 +33,7 @@ You can also set environmental variables:
 * `MINECHAT_READ_PORT` - Chat port
 * `MINECHAT_HISTORY_PATH` - Path to a history file, all messages will be saved there
 
-The command-line arguments are have more priority than environmental variables.
+The command-line arguments have more priority than environmental variables.
 
 ## Sending chat messages
 
@@ -53,6 +54,7 @@ You can also set token as environmental variables:
 
 * `MINECHAT_WRITE_HOST` - Chat address (ip or host name)
 * `MINECHAT_WRITE_PORT` - Chat port for writing
+* `MINECHAT_TOKEN` - Token to access the chat
 
 
 # Project Goals
