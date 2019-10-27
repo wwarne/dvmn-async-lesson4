@@ -25,6 +25,7 @@ Chat reader settings:
   --host HOST         Chat address (ip or host name)
   --port PORT         Chat port
   --history FILEPATH  Path to a history file, all messages will be saved there
+  --verbose           Show more information on a screen
 ```
 
 You can also set environmental variables:
@@ -32,6 +33,7 @@ You can also set environmental variables:
 * `MINECHAT_READ_HOST` - Chat address (ip or host name)
 * `MINECHAT_READ_PORT` - Chat port
 * `MINECHAT_HISTORY_PATH` - Path to a history file, all messages will be saved there
+* `MINECHAT_READ_VERBOSE` - Show debug information on screen
 
 The command-line arguments have more priority than environmental variables.
 
