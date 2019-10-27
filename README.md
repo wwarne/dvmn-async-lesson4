@@ -55,7 +55,27 @@ You can also set token as environmental variables:
 * `MINECHAT_WRITE_HOST` - Chat address (ip or host name)
 * `MINECHAT_WRITE_PORT` - Chat port for writing
 * `MINECHAT_TOKEN` - Token to access the chat
+* `MINECHAT_WRITE_VERBOSE` - Show debug information on screen
 
+
+```bash
+$ python chat_writer.py --help
+
+usage: Minechat message sender [-h] [--host HOST] [--port PORT]
+                               [--message MESSAGE] [--verbose]
+                               [--token TOKEN | --username USERNAME]
+
+optional arguments:
+  -h, --help           show this help message and exit
+
+Sender settings:
+  --host HOST          Chat address (ip or host name)
+  --port PORT          Chat port
+  --message MESSAGE    Message to send
+  --verbose            Show more information in output
+  --token TOKEN        Authorization token
+  --username USERNAME  Your username for register (if token is not set)
+```
 
 # Project Goals
 
